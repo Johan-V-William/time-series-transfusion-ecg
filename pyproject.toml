@@ -1,0 +1,107 @@
+[project]
+name = "time-series-transfusion-ecg"
+version = "0.1.0"
+description = "Multi-stage ML research pipeline"
+requires-python = ">=3.11"
+dependencies = [
+    # ── Configuration ────────────────────────────────────────────────
+    "hydra-core>=1.3.2,<2.0",
+    "omegaconf>=2.3.0,<3.0",
+    "ml_collections>=0.1.1",
+
+    # ── Deep Learning ────────────────────────────────────────────────
+    "torch>=2.2,<2.8",
+    "torchvision>=0.17,<0.23",
+
+    # ── Scientific Computing ─────────────────────────────────────────
+    "numpy>=1.26,<2.3",
+    "scipy>=1.10,<1.17",
+    "scikit-learn>=1.4,<1.8",
+
+    # ── Data Processing ──────────────────────────────────────────────
+    "pandas>=2.2,<3.0",
+    "wfdb>=4.1",
+
+    # ── Computer Vision ──────────────────────────────────────────────
+    "opencv-python>=4.9,<5.0",
+    "Pillow>=10.0,<12.0",
+    "albumentations>=1.4,<3.0",
+
+    # ── Visualization ────────────────────────────────────────────────
+    "matplotlib>=3.8,<4.0",
+    "tensorboard>=2.13,<3.0",
+
+    # ── Experiment Tracking ──────────────────────────────────────────
+    "wandb>=0.15,<1.0",
+    "mlflow>=2.11,<4.0",
+
+    # ── Logging ──────────────────────────────────────────────────────
+    "rich>=13.0,<15.0",
+    "loguru>=0.7,<1.0",
+
+    # ── Utilities ────────────────────────────────────────────────────
+    "tqdm>=4.66,<5.0",
+    "PyYAML>=6.0,<7.0",
+    "python-dotenv>=1.0,<2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.4",
+    "mypy>=1.9",
+    "ipykernel>=6.29",
+    "ipywidgets>=8.0",
+]
+clip = [
+    "open-clip-torch>=2.24",
+    "ftfy>=6.1",
+    "regex>=2024.0",
+]
+segment = [
+    "segment-anything>=1.0",
+]
+
+[project.scripts]
+train      = "..scripts.train:main"
+evaluate   = "..scripts.evaluate:main"
+infer      = "..scripts.infer:main"
+gen-synth  = "..scripts.generate:main"
+build-ds   = "..scripts.build_dataset:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/."]
+
+# ── uv ─────────────────────────────────────────────────────────────────────
+[tool.uv]
+dev-dependencies = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.4",
+    "ipykernel>=6.29",
+]
+
+# ── ruff ───────────────────────────────────────────────────────────────────
+[tool.ruff]
+line-length = 100
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+ignore = ["E501"]
+
+# ── pytest ─────────────────────────────────────────────────────────────────
+[tool.pytest.ini_options]
+testpaths   = ["tests"]
+pythonpath  = ["src"]
+addopts     = "-ra -q --tb=short"
+
+# ── mypy ────────────────────────────────────────────────────────────────────
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true

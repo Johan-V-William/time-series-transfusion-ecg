@@ -1,0 +1,33 @@
+training:
+  epochs:      5000
+  batch_size:  256
+  lr:          1e-4
+  betas:       [0.9, 0.99]
+  log_every:   100       # print loss every N epochs
+  vis_every:   500       # visualise + save samples every N epochs
+  save_dir:    "saved_files"
+
+# ============================================================
+# Model — TransEncoder
+# ============================================================
+model:
+  hidden_dim:  256
+  num_layers:  6
+  n_heads:     8
+
+# ============================================================
+# Diffusion — GaussianDiffusion1D
+# ============================================================
+diffusion:
+  timesteps:     1000
+  beta_schedule: "cosine"    # cosine | linear | quadratic | sigmoid
+  objective:     "pred_v"    # pred_v | pred_x0 | pred_noise
+  loss_type:     "l2"
+
+# ============================================================
+# Evaluation
+# ============================================================
+evaluation:
+  sample_size:   250          # samples used for PCA / t-SNE
+  autocorr_lag:  50
+  tsne_perplexity: 40
