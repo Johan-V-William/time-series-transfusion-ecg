@@ -1,0 +1,27 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+
+# Build/artifacts
+build/
+dist/
+*.egg-info/
+
+# Logs
+*.log
+logs/
+
+# Checkpoints and generated outputs
+checkpoints/
+*.pt
+*.pth
+*.png
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/

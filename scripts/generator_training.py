@@ -26,7 +26,7 @@ warnings.filterwarnings("ignore")
 import torch
 from omegaconf import OmegaConf
 
-from src.datasets.gen_real_dts import build_datasets
+from src.datasets.gen_real_dts_v0 import build_datasets
 from src.train.gen_trainer import ModelTrainer
 from src.evaluation.gen_evaluator import GenerationEvaluator
 

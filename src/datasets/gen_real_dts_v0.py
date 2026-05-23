@@ -18,7 +18,7 @@ import torch
 from torch.utils.data import Dataset
 from omegaconf import DictConfig
 
-from preprocessing import build_ecg
+from src.preprocessing.gen_preprocess import build_ecg
 
 
 # ══════════════════════════════════════════════════════════════
