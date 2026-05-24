@@ -17,7 +17,7 @@ import numpy as np
 from omegaconf import DictConfig
 from tqdm.auto import tqdm
 
-from ecg_windowing import (
+from .ecg_windowing import (
     preprocess_record,
     detect_rpeaks,
     build_windowing,
@@ -109,7 +109,9 @@ class _BaseECG:
 
         print(f"[{cls}] Done — train={train.shape}  test={test.shape}")
         return train, test
-
+ error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+fatal: could not create work tree dir 'time-series-transfusion-ecg': No such file or directory
+[Errno 2] No such file or directory:
 
 # ══════════════════════════════════════════════════════════════
 # FixedECG — windowing.method = "hard_fixed"
