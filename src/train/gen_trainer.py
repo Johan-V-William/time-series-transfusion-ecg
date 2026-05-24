@@ -179,4 +179,4 @@ class ModelTrainer:
             self.optimizer.step()
             last_loss = loss.item()
 
-        return last_loss
+       return last_loss

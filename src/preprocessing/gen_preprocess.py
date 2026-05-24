@@ -109,10 +109,6 @@ class _BaseECG:
 
         print(f"[{cls}] Done — train={train.shape}  test={test.shape}")
         return train, test
- error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
-fatal: could not create work tree dir 'time-series-transfusion-ecg': No such file or directory
-[Errno 2] No such file or directory:
-
 # ══════════════════════════════════════════════════════════════
 # FixedECG — windowing.method = "hard_fixed"
 # ══════════════════════════════════════════════════════════════
