@@ -219,7 +219,7 @@ def validate_beat(
     min_len:  int = 50,
     max_len:  int = 512,
 ) -> bool:
-    \"\"\"Sanity check before feeding to CNN.\"\"\"
+    """Sanity check before feeding to CNN."""
     if len(segment) < min_len or len(segment) > max_len:
         return False
     if np.ptp(segment) < 1e-6:   # flat signal
@@ -228,9 +228,9 @@ def validate_beat(
 
 
 def snr_estimate(segment: np.ndarray) -> float:
-    \"\"\"\n    Rough SNR estimate: ratio of peak-to-peak to noise floor.
+    """    Rough SNR estimate: ratio of peak-to-peak to noise floor.
     Noise estimated as std of signal after removing trend.
-    \"\"\"
+    """
     trend = np.linspace(segment[0], segment[-1], len(segment))
     residual = segment - trend
     signal_power = np.ptp(segment)
@@ -238,12 +238,12 @@ def snr_estimate(segment: np.ndarray) -> float:
     return signal_power / (noise_power + 1e-8)
 
 def plot_segmentation(signal, beats, title="ECG Segmentation", fs=360):
-    \"\"\"\n    Matplotlib visualization matching Figure 10 from paper:
+    """    Matplotlib visualization matching Figure 10 from paper:
     - Top: full signal with window positions + segmented beat boundaries
     - Bottom: zoomed individual beat segments (Method I and II)
 
     Requires matplotlib.
-    \"\"\"
+    """
     # try:
     #     import matplotlib.pyplot as plt
     #     import matplotlib.patches as patches

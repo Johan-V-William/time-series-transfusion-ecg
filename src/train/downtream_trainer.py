@@ -95,7 +95,6 @@ class Trainer:
             if test_metrics["acc"] > best_acc:
                 best_acc   = test_metrics["acc"]
                 best_state = {k: v.clone() for k, v in self.model.state_dict().items()}
-
         # Save best model for this fold
         if self.ckpt_dir and best_state:
             ckpt_path = self.ckpt_dir / f"fold_{fold_idx}_best.pt"

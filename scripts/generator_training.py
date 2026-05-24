@@ -1,8 +1,4 @@
 """
-train.py
-========
-Training script — entry point duy nhất để chạy experiment.
-
 Usage
 ─────
     # dùng config mặc định
@@ -29,8 +25,6 @@ from omegaconf import OmegaConf
 from src.datasets.gen_real_dts_v0 import build_datasets
 from src.train.gen_trainer import ModelTrainer
 from src.evaluation.gen_evaluator import GenerationEvaluator
-
-# import model & diffusion từ project bạn
 from src.models.generator_transfusion import GaussianDiffusion1D, TransEncoder
 
 
@@ -150,8 +144,8 @@ def make_run_name(train_cfg, data_cfg) -> str:
 
 def main():
     parser = argparse.ArgumentParser(description="ECG DDPM Training")
-    parser.add_argument("--data-config",  default="config/data_config.yaml")
-    parser.add_argument("--train-config", default="config/train_config.yaml")
+    parser.add_argument("--data-config",  default="config/data.yaml")
+    parser.add_argument("--train-config", default="config/train.yaml")
     parser.add_argument("--resume",       default=None,
                         help="Path to checkpoint .pth to resume from")
     # override bất kỳ tham số qua CLI: key=value

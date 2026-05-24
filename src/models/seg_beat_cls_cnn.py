@@ -6,7 +6,6 @@ import torch.nn as nn
 from dataclasses import dataclass
 from typing import Tuple
 
-from src.registry import register_model
 
 
 class ConvBlock(nn.Module):

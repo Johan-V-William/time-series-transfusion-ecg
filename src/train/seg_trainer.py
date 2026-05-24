@@ -1,8 +1,10 @@
-import torch
-import torch.nn as nn
+import json
 import logging
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List, Optional
+
+import torch
+import torch.nn as nn
 from torch.utils.data import DataLoader
 
 from src.models.seg_beat_cls_cnn import BeatCNN
@@ -18,14 +20,18 @@ class Trainer:
         optimizer: torch.optim.Optimizer,
         device: str = "cpu",
         checkpoint_dir: Path = Path("checkpoints/"),
+        metrics_dir: Optional[Path] = None,
     ):
         self.model = model.to(device)
         self.optimizer = optimizer
         self.criterion = nn.CrossEntropyLoss()
         self.device = device
         self.ckpt_dir = checkpoint_dir
+        self.metrics_dir = Path(metrics_dir) if metrics_dir else None
         if self.ckpt_dir:
             self.ckpt_dir.mkdir(parents=True, exist_ok=True)
+        if self.metrics_dir:
+            self.metrics_dir.mkdir(parents=True, exist_ok=True)
         self.logger = logging.getLogger(self.__class__.__name__)
 
     def train_epoch(self, loader: DataLoader) -> Dict[str, float]:
@@ -68,6 +74,13 @@ class Trainer:
         metrics["loss"] = loss
         return metrics
 
+    def _save_history(self, fold_idx: int, history: List[Dict[str, float]]):
+        if not self.metrics_dir:
+            return
+        history_path = self.metrics_dir / f"fold_{fold_idx}_history.json"
+        with history_path.open("w", encoding="utf-8") as f:
+            json.dump(history, f, indent=2)
+
     def fit(
         self,
         train_loader: DataLoader,
@@ -77,6 +90,7 @@ class Trainer:
     ) -> BeatCNN:
         best_acc = -1.0
         best_state = None
+        history: List[Dict[str, float]] = []
 
         for epoch in range(epochs):
             train_metrics = self.train_epoch(train_loader)
@@ -93,9 +107,25 @@ class Trainer:
                 test_metrics.get("F1", 0.0),
             )
 
+            history.append(
+                {
+                    "epoch": epoch + 1,
+                    "train_loss": train_metrics["loss"],
+                    "train_acc": train_metrics["acc"],
+                    "test_loss": test_metrics.get("loss", 0.0),
+                    "test_acc": test_metrics.get("acc", 0.0),
+                    "test_f1": test_metrics.get("F1", 0.0),
+                    "test_se": test_metrics.get("Se", 0.0),
+                    "test_sp": test_metrics.get("Sp", 0.0),
+                    "test_pp": test_metrics.get("P+", 0.0),
+                }
+            )
+
             if test_metrics["acc"] > best_acc:
                 best_acc = test_metrics["acc"]
                 best_state = {k: v.clone() for k, v in self.model.state_dict().items()}
+
+        self._save_history(fold_idx, history)
 
         if self.ckpt_dir and best_state:
             ckpt_path = self.ckpt_dir / f"fold_{fold_idx}_best.pt"

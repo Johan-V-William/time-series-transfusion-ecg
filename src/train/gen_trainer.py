@@ -1,11 +1,6 @@
 
 """
 ==========
-ModelTrainer — quản lý toàn bộ training loop cho DDPM.
-
-Tách biệt khỏi script để dễ test, resume, và thay đổi
-optimizer / scheduler mà không đụng vào training script.
-
 Public API
 ──────────
     trainer = ModelTrainer(cfg, diffusion, train_loader, test_loader, device)
@@ -136,7 +131,6 @@ class ModelTrainer:
         samples  = self._sample(n)
         real_np  = self.real_data.cpu().numpy().transpose(0, 2, 1)  # (N, L, F)
 
-        # lưu samples
         npy_path = self.folder / f"synth-epoch{epoch}.npy"
         np.save(npy_path, samples)
 

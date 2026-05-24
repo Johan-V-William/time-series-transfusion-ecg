@@ -1,8 +1,4 @@
 """
-dataset_builder.py
-==================
-Wrap (train_array, test_array) từ preprocessing thành PyTorch Datasets.
-
 Usage
 ─────
     from dataset_builder import build_datasets
@@ -21,6 +17,20 @@ from omegaconf import DictConfig
 from src.preprocessing.gen_preprocess import build_ecg
 
 
+# """
+# MIT-BIH DS1 / DS2 split (AAMI recommendation)
+# """
+TRAIN_RECORDS = [
+    '101', '106', '108', '109', '112', '114', '115', '116', '118', '119',
+    '122', '124', '201', '203', '205', '207', '208', '209', '215', '220',
+    '223', '230'
+]
+
+TEST_RECORDS = [
+    '100', '103', '105', '111', '113', '117', '121', '123', '200', '202',
+    '210', '212', '213', '214', '217', '219', '221', '222', '228', '231',
+    '232', '233', '234'
+]
 # ══════════════════════════════════════════════════════════════
 # Dataset wrapper
 # ══════════════════════════════════════════════════════════════

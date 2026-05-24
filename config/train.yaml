@@ -31,3 +31,8 @@ evaluation:
   sample_size:   250          # samples used for PCA / t-SNE
   autocorr_lag:  50
   tsne_perplexity: 40
+  sigw1:
+      enabled: false
+      depth: 4
+      normalise: true
+      augmentations: ["add_time"]   # "add_time", "scale", ...

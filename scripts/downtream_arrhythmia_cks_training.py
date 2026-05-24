@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Optional # Import Optional
 
 from config.config import CFG, CNNConfig
-from data.dataset import build_kfold_loaders
+from src.datasets.downstream_prepare_tstr_dts import build_kfold_loaders
 from models.cnn import build_cnn
 from training.trainer import Trainer
 
