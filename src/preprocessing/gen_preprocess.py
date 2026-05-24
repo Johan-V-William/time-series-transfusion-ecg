@@ -139,18 +139,6 @@ class FixedECG(_BaseECG):
 
 class AdaptiveECG(_BaseECG):
     """
-    R-peak detection + windowing căn theo nhịp tim.
-
-    "rpeak"    — cắt [R - pre_ms : R + post_ms], seq_len fixed
-    "adaptive" — cắt theo RR-interval rồi nonlinear_warp() về target_len
-
-    Config:
-        ecg.windowing.method:        "rpeak" | "adaptive"
-        # rpeak:
-        ecg.windowing.pre_peak_ms:   192
-        ecg.windowing.post_peak_ms:  512
-        # adaptive:
-        ecg.windowing.target_len:    null   ← điền sau
     """
 
     def __init__(self, cfg: DictConfig):

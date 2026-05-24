@@ -20,9 +20,15 @@ logger = logging.getLogger("segment")
 
 def load_best_model(checkpoint_dir: Path, fold_idx: int = 0, device: str = "cpu") -> torch.nn.Module:
     model = build_cnn(CFG.cnn)
-    ckpt_path = checkpoint_dir / f"fold_{fold_idx}_best.pt"
-    if not ckpt_path.exists():
-        raise FileNotFoundError(f"Checkpoint not found at {ckpt_path}. Please train the model first.")
+    root = Path(CFG.training.log_dir)
+
+    ckpts = sorted(
+          root.glob("seg_beat_cls_*/*/checkpoints/fold_0_best.pt"),
+          key=lambda p: p.stat().st_mtime
+    )
+
+    ckpt_path = ckpts[-1]
+    
     ckpt = torch.load(ckpt_path, map_location=device)
     model.load_state_dict(ckpt)
     model.eval()
@@ -67,6 +73,12 @@ if __name__ == "__main__":
     parser.add_argument("--fold", type=int, default=0, help="Fold index for loading trained model checkpoint")
     parser.add_argument("--method", choices=["I", "II", "both"], default="both")
     parser.add_argument("--device", type=str, default="cpu")
+    parser.add_argument(
+        "--checkpoint",
+        type=str,
+        required=True
+    )
     args = parser.parse_args()
+
 
     run_segmentation(args.record, args.fold, args.method, args.device)
