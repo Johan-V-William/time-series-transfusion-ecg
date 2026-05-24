@@ -16,6 +16,9 @@ Thứ tự ưu tiên: CLI args > train_config.yaml > default
 from __future__ import annotations
 
 import argparse
+import subprocess
+import sys
+from pathlib import Path
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -138,6 +141,47 @@ def make_run_name(train_cfg, data_cfg) -> str:
     )
 
 
+def maybe_postprocess_generated_labels(train_cfg, trainer):
+    post_cfg = getattr(train_cfg, "postprocess_generated", None)
+    if not post_cfg or not post_cfg.get("enabled", False):
+        return
+
+    synth_files = sorted(trainer.folder.glob("synth-epoch*.npy"))
+    if not synth_files:
+        print("[postprocess] No generated .npy file found to label.")
+        return
+
+    input_path = synth_files[-1]
+    output_name = post_cfg.get("output_name", f"{input_path.stem}-labeled.pt")
+    output_path = trainer.folder / output_name
+
+    cmd = [
+        sys.executable,
+        "scripts/postprocess_generated_labels.py",
+        "--input",
+        str(input_path),
+        "--output",
+        str(output_path),
+        "--dataset-type",
+        str(post_cfg.get("dataset_type", "mit")),
+    ]
+
+    annotation_file = post_cfg.get("annotation_file", None)
+    use_model_for_label = post_cfg.get("use_model_for_label", False)
+    checkpoint = post_cfg.get("checkpoint", None)
+
+    if annotation_file:
+        cmd.extend(["--annotation-file", str(annotation_file)])
+    elif use_model_for_label:
+        cmd.append("--use-model-for-label")
+        if checkpoint:
+            cmd.extend(["--checkpoint", str(checkpoint)])
+
+    print("[postprocess] Running external labeling pipeline...")
+    subprocess.run(cmd, check=True)
+    print(f"[postprocess] Labeled dataset saved to: {output_path}")
+
+
 # ──────────────────────────────────────────────────────────────
 # Main
 # ──────────────────────────────────────────────────────────────
@@ -197,6 +241,9 @@ def main():
 
     # ── train ───────────────────────────────────────────────
     trainer.train(start_epoch=start_epoch)
+
+    # ── optional external postprocess for generated labels ──
+    maybe_postprocess_generated_labels(train_cfg, trainer)
 
 
 if __name__ == "__main__":
